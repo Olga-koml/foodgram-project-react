@@ -15,3 +15,7 @@ services:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - ../frontend/build:/usr/share/nginx/html/
       - ../docs/:/usr/share/nginx/html/api/docs/
+      - ../backend/foodgram/media:/usr/share/nginx/media/
+
+    extra_hosts:
+        - "host.docker.internal:host-gateway"
