@@ -11,14 +11,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
 from pathlib import Path
-#from dotenv import load_dotenv
-
-#load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-#BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -49,7 +44,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'djoser',
     'django_filters',
-    
 ]
 
 MIDDLEWARE = [
@@ -89,8 +83,6 @@ WSGI_APPLICATION = 'foodgram.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
-        #'NAME': os.getenv('DB_NAME', default='sqlite3'),
-        #'NAME': BASE_DIR / 'db.sqlite3',
         'NAME': os.getenv('DB_NAME', default='foodgram'),
         'USER': os.getenv('POSTGRES_USER', default='foodgram_user'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='1234'),
@@ -147,41 +139,33 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly', 
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ],
 
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',),
-    
+
     'DEFAULT_PAGINATION_CLASS': 'api.pagination.CustomPagination',
-    
+
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
-
-    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-
-    # 'DEFAULT_PAGINATION_CLASS':
-    #     'rest_framework.pagination.PageNumberPagination',
-    # 'PAGE_SIZE': 6,
 
 }
 
 DJOSER = {
-    # 'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
-    # 'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
-    # 'ACTIVATION_URL': '#/activate/{uid}/{token}',
-    # 'SEND_ACTIVATION_EMAIL': True,
     'LOGIN_FIELD': 'email',
     'SERIALIZERS': {
         'user': 'users.serializers.CustomCreateUserSerializer',
         'user_create': 'users.serializers.CustomCreateUserSerializer',
         'current_user': 'users.serializers.CustomCreateUserSerializer',
-        #'user_list': 'users.serializers.CustomCreateUserSerializer',
     },
     'HIDE_USERS': False,
     'PERMISSIONS': {
         'user_list': ['rest_framework.permissions.AllowAny'],
         'user': ['rest_framework.permissions.AllowAny']
-
     }
 
 }
+
+MAX_LENGTH_NAME = 200
+PAGE_SIZE = 6
+MIN_VALUE_VALIDATOR = 1
