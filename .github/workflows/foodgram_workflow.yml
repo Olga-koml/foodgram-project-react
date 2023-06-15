@@ -57,7 +57,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           source: "infra/docker-compose.yml"
-          target: "."
+          target: "./foodgram_project_diplom/"
           strip_components: 1
 
   copy_docs:
@@ -73,7 +73,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           source: "docs/*"
-          target: "./docs/"
+          target: "./foodgram_project_diplom/docs/"
           strip_components: 1
 
   copy_nginx_conf:
@@ -89,7 +89,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           source: "infra/nginx.conf"
-          target: "."
+          target: "./foodgram_project_diplom/"
           strip_components: 1
 
   deploy:
@@ -121,12 +121,12 @@ jobs:
             echo DB_PORT=${{ secrets.DB_PORT }} >> .env
             # echo HOST=${{ secrets.HOST }} >> .env
             # echo USER=${{ secrets.USER }} >> .env
-            echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
+            echo SECRET_KEY_APP=${{ secrets.SECRET_KEY_APP }} >> .env
             # sudo docker-compose stop
             # sudo docker-compose down -v
             # sudo docker-compose rm backend
-            # sudo docker compose up -d --build
-            sudo docker compose up -d
+            sudo docker compose up -d --build
+            # sudo docker compose up -d
             # sudo docker exec vm-alexey_backend_1 python manage.py makemigrations
             # sudo docker exec vm-alexey_backend_1 python manage.py migrate --noinput
             # sudo docker exec vm-alexey_backend_1 python manage.py initadmin
