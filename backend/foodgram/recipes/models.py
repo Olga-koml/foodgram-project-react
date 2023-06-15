@@ -51,7 +51,7 @@ class Ingredient(models.Model):
                 name='unique_ingredient',
                 violation_error_message=(
                     'Уже есть такой ингредиент с такой мерой измерения!'
-                    )
+                )
             )
         ]
 
@@ -92,9 +92,9 @@ class Recipe(models.Model):
                 settings.MIN_VALUE_VALIDATOR,
                 message=(f'Время приготовления не может быть меньше'
                          f'{settings.MIN_VALUE_VALIDATOR}'),
-                )
-            ]
-     )
+            )
+        ]
+    )
 
     class Meta:
         ordering = ('-id',)
@@ -122,7 +122,7 @@ class RecipesIngredient(models.Model):
             settings.MIN_VALUE_VALIDATOR,
             message=(f'Количество ингредиентов не может быть меньше'
                      f'{settings.MIN_VALUE_VALIDATOR}')
-            )]
+        )]
     )
 
     class Meta:

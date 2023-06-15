@@ -1,21 +1,71 @@
-version: '3.3'
+version: '3.8'
 services:
 
-  frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
+  db:
+    image: postgres:13.0-alpine
     volumes:
-      - ../frontend/:/app/result_build/
+      - foodgram_db:/var/lib/postgresql/data/
+    env_file:
+      - ./.env
+
+  backend:
+    image: olgakom/foodgram_backend:v2.14.06.2023
+    volumes:
+      - foodgram_static:/app/static/
+      - foodgram_media:/app/media/
+    depends_on:
+      - db
+    env_file:
+      - ./.env
+
+  frontend:
+    image: olgakom/foodgram_frontend:v.14.06.2023
+    volumes:
+      - ./frontend/:/app/result_build/
+
   nginx:
-    image: nginx:1.19.3
+    image: nginx:1.21.3-alpine
     ports:
-      - "80:80"
+      - 80:80
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      - ../frontend/build:/usr/share/nginx/html/
-      - ../docs/:/usr/share/nginx/html/api/docs/
-      - ../backend/foodgram/media:/usr/share/nginx/media/
+      - ./frontend/build:/usr/share/nginx/html/
+      - ./docs/:/usr/share/nginx/html/api/docs/
+      - foodgram_static:/var/html/static/
+      - foodgram_media:/var/html/media/
+    depends_on:
+      - backend
 
-    extra_hosts:
-        - "host.docker.internal:host-gateway"
+volumes:
+  foodgram_static:
+  foodgram_media:
+  foodgram_db:
+  foodgram_frontend:
+
+
+
+
+
+
+
+# version: '3.3'
+# services:
+
+#   frontend:
+#     build:
+#       context: ../frontend
+#       dockerfile: Dockerfile
+#     volumes:
+#       - ../frontend/:/app/result_build/
+#   nginx:
+#     image: nginx:1.19.3
+#     ports:
+#       - "80:80"
+#     volumes:
+#       - ./nginx.conf:/etc/nginx/conf.d/default.conf
+#       - ../frontend/build:/usr/share/nginx/html/
+#       - ../docs/:/usr/share/nginx/html/api/docs/
+#       - ../backend/foodgram/media:/usr/share/nginx/media/
+
+#     extra_hosts:
+#         - "host.docker.internal:host-gateway"

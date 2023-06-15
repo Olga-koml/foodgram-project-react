@@ -3,6 +3,7 @@ import os
 
 from django.conf import settings
 from django.core.management import BaseCommand
+
 from recipes.models import Ingredient
 
 
@@ -12,7 +13,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         path = os.path.split(os.path.split(settings.BASE_DIR)[0])
-        with open(f'{path[0]}/data/ingredients.csv', 'r', encoding="utf-8") as csv_file:
+        with open(f'{path[0]}/data/ingredients.csv',
+                  'r', encoding="utf-8") as csv_file:
             reader = csv.reader(csv_file)
             objs = []
             for row in reader:
@@ -22,4 +24,4 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS(
             f'Successfully load data  {Ingredient.objects.count()} elements')
-            )
+        )

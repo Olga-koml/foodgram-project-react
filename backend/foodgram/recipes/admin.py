@@ -28,7 +28,7 @@ class RecipeAdmin(admin.ModelAdmin):
     list_display = (
         'name', 'id', 'author',
         'get_count_favorites', 'get_mini_picture'
-        )
+    )
     readonly_fields = ('get_count_favorites',)
     list_filter = ('author', 'name', 'tags',)
     save_on_top = True

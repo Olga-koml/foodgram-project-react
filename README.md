@@ -1,3 +1,5 @@
+![example workflow](https://github.com/Olga-koml/foodgram_project_react/actions/workflows/foodgram_workflow.yml/badge.svg)
+
 # Проект FOODGRAM
 
 [Ссылка на redoc проекта на сервере будет позже](http://158.160.40.3/redoc/ "http://158.160.40.3/redoc/").

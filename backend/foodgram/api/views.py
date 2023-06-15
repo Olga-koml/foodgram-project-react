@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from recipes.models import (FavoriteRecipe, Ingredient, Recipe, ShoppingCart,
                             Tag)
 from users.models import Subscription
+
 from .filters import IngredientFilter, RecipiesFilter
 from .mixins import GetListCreateDeleteMixin
 from .permissions import IsAuthorOrReadOnly
@@ -109,11 +110,11 @@ class SubscriptionViewSet(GetListCreateDeleteMixin):
             if request.user.subscriber.filter(author=author).exists():
                 return Response({
                     'errors': 'Вы уже подписаны на данного автора'
-                    }, status=status.HTTP_400_BAD_REQUEST)
+                }, status=status.HTTP_400_BAD_REQUEST)
             elif request.user == author:
                 return Response({
                     'errors': 'Вы пытаетесь подписаться на самого себя'
-                    }, status=status.HTTP_400_BAD_REQUEST)
+                }, status=status.HTTP_400_BAD_REQUEST)
             serializer = SubscriptionSerializer(
                 author, data=request.data,
                 context={"request": request}
@@ -124,7 +125,7 @@ class SubscriptionViewSet(GetListCreateDeleteMixin):
         if request.method == "DELETE":
             if not Subscription.objects.filter(
                 author=author, user=request.user
-                                               ).exists():
+            ).exists():
                 return Response(
                     {'errors': 'Вы не были подписаны на этого автора'},
                     status=status.HTTP_400_BAD_REQUEST
