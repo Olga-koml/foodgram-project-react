@@ -1,5 +1,4 @@
 from django.db import transaction
-from django.shortcuts import get_object_or_404
 from djoser.serializers import UserSerializer
 from rest_framework import serializers
 
@@ -7,7 +6,7 @@ from recipes.models import Ingredient, Recipe, RecipesIngredient, Tag
 from users.models import User
 from users.serializers import CustomCreateUserSerializer, SubscribedFlag
 
-from .utilis import Base64ImageFields
+from .utilis import Base64ImageFields, add_ingredients_to_recipe
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -35,7 +34,7 @@ class RecipesIngredientSerializer(serializers.ModelSerializer):
     name = serializers.ReadOnlyField(source='ingredient.name')
     measurement_unit = serializers.ReadOnlyField(
         source='ingredient.measurement_unit'
-        )
+    )
 
     class Meta:
         model = RecipesIngredient
@@ -49,7 +48,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
     ingredients = RecipesIngredientSerializer(
         many=True, source='recipesingredient_set', read_only=True
-        )
+    )
     author = CustomCreateUserSerializer(read_only=True)
     is_favorited = serializers.SerializerMethodField(read_only=True)
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
@@ -84,7 +83,6 @@ class RecipeShortDescriptionSerializer(serializers.ModelSerializer):
 
 class RecipePostSerializer(serializers.ModelSerializer):
     """Сериализатор для публикация рецепта."""
-
     ingredients = RecipesIngredientSerializer(
         many=True, source='recipesingredient_set', )
     image = Base64ImageFields()
@@ -98,14 +96,14 @@ class RecipePostSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'ingredients', 'tags', 'image',
             'name', 'author', 'text', 'cooking_time'
-            )
+        )
 
     def validate(self, data):
-        ingredients_list = []
+        recipe_ingredients = []
         ingredients = self.initial_data.get('ingredients')
         for ingredient in ingredients:
-            ingredients_list.append(ingredient.get('id'))
-        if len(set(ingredients_list)) != len(ingredients_list):
+            recipe_ingredients.append(ingredient.get('id'))
+        if len(set(recipe_ingredients)) != len(recipe_ingredients):
             raise serializers.ValidationError(
                 'Вы ввели повторяющиеся ингредиенты, исправьте для сохранения рецепта'
             )
@@ -117,14 +115,7 @@ class RecipePostSerializer(serializers.ModelSerializer):
         tags = validated_data.pop('tags')
         recipe = Recipe.objects.create(**validated_data)
         recipe.tags.set(tags)
-        for ingredient in ingredients:
-            current_ingredient = get_object_or_404(
-                Ingredient, id=ingredient['ingredient']['id']
-                )
-            RecipesIngredient.objects.create(
-                recipe=recipe,
-                ingredient=current_ingredient,
-                amount=ingredient['amount'])
+        add_ingredients_to_recipe(ingredients, recipe)
         return recipe
 
     @transaction.atomic
@@ -134,14 +125,7 @@ class RecipePostSerializer(serializers.ModelSerializer):
         instance.tags.clear()
         instance.tags.set(tags)
         instance.ingredients.clear()
-        for ingredient in ingredients:
-            current_ingredient = get_object_or_404(
-                Ingredient, id=ingredient['ingredient']['id']
-                )
-            RecipesIngredient.objects.create(
-                recipe=instance,
-                ingredient=current_ingredient,
-                amount=ingredient['amount'])
+        add_ingredients_to_recipe(ingredients, instance)
         return super().update(instance, validated_data)
 
     def to_representation(self, instance):
@@ -153,7 +137,6 @@ class RecipePostSerializer(serializers.ModelSerializer):
 
 class SubscriptionSerializer(UserSerializer, SubscribedFlag):
     """Сериализатор для подписок."""
-
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()
 
@@ -162,7 +145,7 @@ class SubscriptionSerializer(UserSerializer, SubscribedFlag):
         fields = (
             'email', 'id', 'username', 'first_name',
             'last_name', 'is_subscribed', 'recipes', 'recipes_count'
-            )
+        )
         read_only_fields = ('email', 'username', 'last_name', 'first_name')
 
     def get_recipes_count(self, obj):
@@ -172,9 +155,9 @@ class SubscriptionSerializer(UserSerializer, SubscribedFlag):
         recipes = obj.recipes.all()
         request = self.context.get('request')
         limit = request.GET.get('recipes_limit')
-        if limit:
+        if limit.isdigit():
             recipes = recipes[:int(limit)]
         serializer = RecipeShortDescriptionSerializer(
             recipes, many=True, read_only=True
-            )
+        )
         return serializer.data

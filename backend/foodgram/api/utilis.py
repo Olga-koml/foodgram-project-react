@@ -2,7 +2,6 @@ import base64
 from datetime import datetime as dt
 
 from django.core.files.base import ContentFile
-from django.db import IntegrityError
 from django.db.models import Sum
 from django.shortcuts import HttpResponse, get_object_or_404
 from prettytable import PrettyTable
@@ -22,24 +21,35 @@ class Base64ImageFields(serializers.ImageField):
             ext = format.split('/')[-1]
             data = ContentFile(
                 base64.b64decode(img_string), name='temp.' + ext
-                )
+            )
         return super().to_internal_value(data)
+
+
+def add_ingredients_to_recipe(ingredients, recipe):
+    """Вспомогательный метод для добавления ингредиентов в рецепт."""
+    ingredients_in_recipe = [
+        RecipesIngredient(
+            recipe=recipe,
+            ingredient_id=ingredient['ingredient']['id'],
+            amount=ingredient['amount']
+        )
+        for ingredient in ingredients
+    ]
+    RecipesIngredient.objects.bulk_create(ingredients_in_recipe)
 
 
 def add_recipe_to(add_serializer, model, request, recipe_id):
     """Вспомогательный метод для добавления
     рецепта в избранное, в корзину покупок."""
     user = request.user
-    try:
-        recipe = get_object_or_404(Recipe, id=recipe_id)
-        model.objects.create(user=user, recipe=recipe)
-        serializer = add_serializer(recipe)
-        return Response(serializer.data,
-                        status=status.HTTP_201_CREATED)
-    except IntegrityError as error:
-        if 'unique constraint' in str(error):
-            return Response({'errors': str(error).split('"')[1]},
-                            status=HTTP_400_BAD_REQUEST)
+    if model.objects.filter(user=user, recipe__id=recipe_id).exists():
+        return Response({'errors': 'Рецепт уже был добавлен ранее!'},
+                        status=status.HTTP_400_BAD_REQUEST)
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    model.objects.create(user=user, recipe=recipe)
+    serializer = add_serializer(recipe)
+    return Response(serializer.data,
+                    status=status.HTTP_201_CREATED)
 
 
 def del_recipe_from(model, request, recipe_id):
@@ -50,7 +60,7 @@ def del_recipe_from(model, request, recipe_id):
     if obj.exists():
         obj.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-    return Response({'errors': 'Рецепт уже удален!'},
+    return Response({'errors': 'Рецепт уже был удален ранее!'},
                     status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -80,8 +90,8 @@ def get_download_shopping_chart(request):
     shopping_list += '\n\nНеобходимы следующие ингредиенты:'
     header_ing = ['№', 'Ингредиент', 'мера изм.', 'Количество', 'Чек']
     ing_list = []
-    for order_number, ingredient in enumerate(ingredients):
-        ing_list.append(f'{order_number+1}.')
+    for order_number, ingredient in enumerate(ingredients, 1):
+        ing_list.append(f'{order_number}.')
         ing_list.append(f'{ingredient["ingredient__name"]} ')
         ing_list.append(f'({ingredient["ingredient__measurement_unit"]})')
         ing_list.append(f'{ingredient["amount"]}')
@@ -97,7 +107,7 @@ def get_download_shopping_chart(request):
         f'ингредиентов для {len(recipes)} рецептов.'
         f'\n\nПриятного аппетита!'
         f'\n\nFoodgram ({today:%Y})'
-        )
+    )
     filename = f'{user.username}_shopping_list.txt'
     response = HttpResponse(shopping_list, content_type='text/plain')
     response['Content-Disposition'] = f'attachment; filename={filename}'

@@ -21,7 +21,7 @@ User = get_user_model()
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
-    """Вью сет для тегов."""
+    """Вьюсет для тегов."""
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     pagination_class = None
@@ -60,7 +60,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if request.method == 'POST':
             return add_recipe_to(
                 RecipeShortDescriptionSerializer, FavoriteRecipe, request, pk
-                )
+            )
         if request.method == 'DELETE':
             return del_recipe_from(FavoriteRecipe, request, pk)
 
@@ -72,7 +72,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if request.method == 'POST':
             return add_recipe_to(
                 RecipeShortDescriptionSerializer, ShoppingCart, request, pk
-                )
+            )
         if request.method == 'DELETE':
             return del_recipe_from(ShoppingCart, request, pk)
 
@@ -105,7 +105,6 @@ class SubscriptionViewSet(GetListCreateDeleteMixin):
             url_path='subscribe', permission_classes=[IsAuthenticated])
     def subscribe(self, request, pk):
         idol = get_object_or_404(User, pk=pk)
-        print('USER строка 144', idol, 'request user - ', request.user)
         if request.method == "POST":
             if request.user.fanatic.filter(idol=idol).exists():
                 return Response({
@@ -118,7 +117,7 @@ class SubscriptionViewSet(GetListCreateDeleteMixin):
             serializer = SubscriptionSerializer(
                 idol, data=request.data,
                 context={"request": request}
-                )
+            )
             serializer.is_valid(raise_exception=True)
             Subscription.objects.create(fanatic=request.user, idol=idol)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
