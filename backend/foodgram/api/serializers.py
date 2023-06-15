@@ -155,7 +155,7 @@ class SubscriptionSerializer(UserSerializer, SubscribedFlag):
         recipes = obj.recipes.all()
         request = self.context.get('request')
         limit = request.GET.get('recipes_limit')
-        if limit.isdigit():
+        if limit and limit.isdigit():
             recipes = recipes[:int(limit)]
         serializer = RecipeShortDescriptionSerializer(
             recipes, many=True, read_only=True

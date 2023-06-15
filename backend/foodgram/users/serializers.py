@@ -12,7 +12,7 @@ class SubscribedFlag(serializers.Serializer):
     def get_is_subscribed(self, obj):
         user = self.context.get('request').user
         return (user.is_authenticated and
-                user.fanatic.filter(idol=obj).exists())
+                user.subscriber.filter(author=obj).exists())
 
 
 class CustomCreateUserSerializer(UserCreateSerializer, SubscribedFlag):

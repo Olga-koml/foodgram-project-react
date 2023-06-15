@@ -93,7 +93,7 @@ class SubscriptionViewSet(GetListCreateDeleteMixin):
     permission_classes = [IsAuthenticated]
 
     def subscriptions(self, request):
-        queryset = User.objects.filter(idol__fanatic=request.user)
+        queryset = User.objects.filter(subscribing__user=request.user)
         pagination = self.paginate_queryset(queryset)
         serializer = SubscriptionSerializer(
             pagination, many=True,
@@ -104,31 +104,31 @@ class SubscriptionViewSet(GetListCreateDeleteMixin):
     @action(detail=True, methods=['post', 'delete'],
             url_path='subscribe', permission_classes=[IsAuthenticated])
     def subscribe(self, request, pk):
-        idol = get_object_or_404(User, pk=pk)
+        author = get_object_or_404(User, pk=pk)
         if request.method == "POST":
-            if request.user.fanatic.filter(idol=idol).exists():
+            if request.user.subscriber.filter(author=author).exists():
                 return Response({
                     'errors': 'Вы уже подписаны на данного автора'
                     }, status=status.HTTP_400_BAD_REQUEST)
-            elif request.user == idol:
+            elif request.user == author:
                 return Response({
                     'errors': 'Вы пытаетесь подписаться на самого себя'
                     }, status=status.HTTP_400_BAD_REQUEST)
             serializer = SubscriptionSerializer(
-                idol, data=request.data,
+                author, data=request.data,
                 context={"request": request}
             )
             serializer.is_valid(raise_exception=True)
-            Subscription.objects.create(fanatic=request.user, idol=idol)
+            Subscription.objects.create(user=request.user, author=author)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         if request.method == "DELETE":
             if not Subscription.objects.filter(
-                idol=idol, fanatic=request.user
+                author=author, user=request.user
                                                ).exists():
                 return Response(
                     {'errors': 'Вы не были подписаны на этого автора'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
             Subscription.objects.filter(
-                idol=idol, fanatic=request.user).delete()
+                author=author, user=request.user).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)

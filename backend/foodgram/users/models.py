@@ -8,28 +8,28 @@ User = get_user_model()
 
 class Subscription(models.Model):
     """Модель подписок"""
-    fanatic = models.ForeignKey(
+    user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='fanatic',
+        related_name='subscriber',
         verbose_name='Подписчик'
     )
-    idol = models.ForeignKey(
+    author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='idol',
+        related_name='subscribing',
         verbose_name='Автор рецепта'
     )
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['fanatic', 'idol'], name='unique_subscription',
+                fields=['user', 'author'], name='unique_subscription',
                 violation_error_message='Вы уже подписаны на данного автора!'
             ),
             models.CheckConstraint(
-                check=~Q(idol=F('fanatic')),
-                name='idol_is_not_fan',
+                check=~Q(author=F('user')),
+                name='author_is_not_subscriber',
                 violation_error_message='Нельзя подписаться на самого себя!'
             )
         ]
