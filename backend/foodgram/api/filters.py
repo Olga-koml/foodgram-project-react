@@ -8,7 +8,7 @@ class IngredientFilter(FilterSet):
     name = filters.CharFilter(
         field_name='name',
         lookup_expr='istartswith'
-        )
+    )
 
     class Meta:
         model = Ingredient
@@ -26,7 +26,7 @@ class RecipiesFilter(FilterSet):
     is_favorited = filters.BooleanFilter(method='get_filter_is_favorited')
     is_in_shopping_cart = filters.BooleanFilter(
         method='get_filter_is_in_shopping_cart'
-        )
+    )
 
     class Meta:
         model = Recipe
