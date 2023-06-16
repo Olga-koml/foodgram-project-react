@@ -134,5 +134,7 @@ dmypy.json
 .idea
 
 .vscode
-foodgram/media
-foodgram/static
+media/
+static/
+foodgram/media/
+foodgram/static/
