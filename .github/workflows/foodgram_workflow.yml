@@ -161,4 +161,4 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          message: Деплой ${{ github.workflow}} успешно завершился!
+          message: Деплой успешно завершился!
