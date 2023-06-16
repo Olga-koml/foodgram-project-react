@@ -62,6 +62,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ./frontend/
+          file: ./frontend/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:v.14.06.2023
 
