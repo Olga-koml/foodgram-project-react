@@ -129,10 +129,10 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            cd foodgram_project_diplom/
             sudo systemctl stop nginx
             sudo docker compose stop
             sudo docker compose down -v
+            cd foodgram_project_diplom/
             # sudo docker compose rm -f backend
             sudo docker compose rm -f backend
             sudo docker compose rm -f frontend
@@ -153,7 +153,7 @@ jobs:
             # sudo docker-compose down -v
             # sudo docker-compose rm backend
             # sudo docker compose up -d --build
-            sudo docker compose up -d
+            sudo docker compose up -d --build
             # sudo docker exec vm-alexey_backend_1 python manage.py makemigrations
             # sudo docker exec vm-alexey_backend_1 python manage.py migrate --noinput
             # sudo docker exec vm-alexey_backend_1 python manage.py initadmin
