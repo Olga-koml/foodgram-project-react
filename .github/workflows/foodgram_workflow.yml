@@ -133,8 +133,8 @@ jobs:
             sudo docker compose stop
             sudo docker compose down -v
             # sudo docker compose rm -f backend
-            sudo docker compose rm backend
-            sudo docker compose rm frontend
+            sudo docker compose rm -f backend
+            sudo docker compose rm -f frontend
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:v.14.06.2023
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:v2.14.06.2023
             sudo rm -r .env
@@ -151,8 +151,8 @@ jobs:
             # sudo docker-compose stop
             # sudo docker-compose down -v
             # sudo docker-compose rm backend
-            sudo docker compose up -d --build
-            # sudo docker compose up -d
+            # sudo docker compose up -d --build
+            sudo docker compose up -d
             # sudo docker exec vm-alexey_backend_1 python manage.py makemigrations
             # sudo docker exec vm-alexey_backend_1 python manage.py migrate --noinput
             # sudo docker exec vm-alexey_backend_1 python manage.py initadmin
