@@ -51,6 +51,7 @@ https://github.com/Olga-koml/foodgram-project-react
 * На сервере установить docker и docker compose.
 ```
 sudo apt install docker.io
+sudo apt install docker-compose -y
 ```
 
 * Создайте на сервере дирректорию ```foodgram_project```:
