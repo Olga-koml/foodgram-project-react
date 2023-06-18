@@ -12,7 +12,7 @@ class Command(BaseCommand):
     help = 'Load ingedients_data from csv files'
 
     def handle(self, *args, **options):
-        path = os.path.split(os.path.split(settings.BASE_DIR)[0])
+        path = os.path.split(settings.BASE_DIR)
         with open(f'{path[0]}/data/ingredients.csv',
                   'r', encoding="utf-8") as csv_file:
             reader = csv.reader(csv_file)
