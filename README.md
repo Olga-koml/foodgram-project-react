@@ -76,6 +76,50 @@ python manage.py load_csv
 python manage.py runserver
 ```
 
+* 2. Установите на свой сервер Docker:
+sudo apt install docker.io 
+
+
+
+* 2. В директории `~/infra/`  выполните команду `docker compose up -d` для
+ создания образов и запуска контейнеров приложения, базы данных и сервера.
+
+
+```
+docker compose up -d
+```
+
+* 3. Выполните миграции: 
+
+```
+sudo docker compose exec backend python manage.py makemigrations
+```
+```
+sudo docker compose exec backend python manage.py migrate
+```
+
+* 4. Выполнить загрузку информации в базу данных:
+
+```
+docker compose exec web python manage.py load_csv
+```
+или 
+
+```
+docker compose exec web python manage.py loaddata fixtures.json 
+```
+
+* 5. Загрузите статику:
+
+```
+docker compose exec web python manage.py collectstatic --no-input
+```
+
+#### Проект доступен
+
+
+## Документация для YaMDb доступна по адресу:
+
 ## Документация для FOODGRAM доступна по адресу:
 
 ```http://localhost/api/docs/redoc.html```
