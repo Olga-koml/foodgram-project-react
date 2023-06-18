@@ -1,9 +1,24 @@
 ![example workflow](https://github.com/Olga-koml/foodgram_project_react/actions/workflows/foodgram_workflow.yml/badge.svg)
 
+### Пароли для ревью:
+```
+# Пользователь с правами администратора
+username = admin
+password = 123456#F
+email = ol@mail.ru
+
+# Пользователь без прав администратора
+username = vova
+password = 987654#F
+email = vv@mail.ru
+
+```
+
 # Проект FOODGRAM
 
-[Ссылка на redoc проекта на сервере будет позже](http://158.160.40.3/redoc/ "http://158.160.40.3/redoc/").
+[Ссылка на redoc проекта](http://158.160.40.3/redoc/ "http://158.160.40.3/redoc/").
 
+```http://okk.hopto.org/redoc/```
 
 Приложение FOODGRAM -  сайт с рецептами. 
 
@@ -24,109 +39,100 @@
 * [requests 2.31.0](https://pypi.org/project/requests/)
 * [prettytable 3.8.0](https://pypi.org/project/prettytable/)
 
-## Как запустить проект локально:
+## Как запустить проект на сервере:
 
 
-* Клонировать репозиторий и перейти в него в командной строке
+* Клонировать репозиторий
 
 ```
 https://github.com/Olga-koml/foodgram-project-react
 ```
-* В директории ```infra``` выполните команду для запуска фронтенда через контейнер докера
 
+* На сервере установить docker и docker compose.
 ```
-docker-compose up -d
-```
-
-* В директории ```backend``` cоздайте и активируйте виртуальное окружение:
-```
-cd backend
-```
-```
-python -m venv env
-```
-```
-source venv/scripts/activate
+sudo apt install docker.io
 ```
 
-* Установить зависимости из файла ```requirements.txt```:
-
+* Создайте на сервере дирректорию ```foodgram_project```:
 ```
-pip install -r requirements.txt
-```
-
-* Перейдите в директорию ```foodgram``` и выполните миграции:
-
-```
-cd foodgram
-```
-```
-python manage.py migrate
+mkdir foodgram_project
 ```
 
-* Выполнить загрузку ингредиентов в базу данных:
+* Добавить в Secrets на Github следующие данные:
 
 ```
-python manage.py load_csv
+SECRET_KEY_APP='123'#указать secret key
+DB_ENGINE=django.db.backends.postgresql # указать, что проект работает с postgresql
+POSTGRES_DB=postgres # имя базы данных
+POSTGRES_USER=postgres # логин для подключения к базе данных
+POSTGRES_PASSWORD=postgres # пароль для подключения к БД
+DB_HOST=db # название сервиса БД (контейнера) 
+DB_PORT=5432 # порт для подключения к БД
+DOCKER_PASSWORD= # Пароль от аккаунта на DockerHub
+DOCKER_USERNAME= # Username в аккаунте на DockerHub
+HOST= # IP удалённого сервера
+USER= # Логин на удалённом сервере
+SSH_KEY= # приватный SSH ключ компьютера, с которого будет происходить подключение к удалённому серверу
+PASSPHRASE= #Если для ssh используется фраза-пароль
+TELEGRAM_TO= #ID пользователя в Telegram
+TELEGRAM_TOKEN= #ID бота в Telegram
 ```
 
-* Запустить проект:
+* Затем локально запустить процес workflow и сделате команды для активации workflow на push проекта:
 
 ```
-python manage.py runserver
+git add .
+git commit -m ''
+git push
 ```
-
-* 2. Установите на свой сервер Docker:
-sudo apt install docker.io 
+* После создастся 2 образа на докерхабе и скопируются на сервер файлы nginx.cong и docker-compose yml. в дирректорию ```foodgram_project```
 
 
 
-* 2. В директории `~/infra/`  выполните команду `docker compose up -d` для
- создания образов и запуска контейнеров приложения, базы данных и сервера.
-
-
-```
-docker compose up -d
-```
-
-* 3. Выполните миграции: 
+* На сервере выполните миграции в контейнере ```backend```: 
 
 ```
 sudo docker compose exec backend python manage.py makemigrations
-```
-```
+
 sudo docker compose exec backend python manage.py migrate
 ```
 
-* 4. Выполнить загрузку информации в базу данных:
+* Загрузите статику:
+```
+sudo docker compose exec backend python manage.py collectstatic --no-input
+```
+
+* Создайте суперпользователя:
+```
+sudo docker compose exec backend python manage.py createsuperuser
+```
+
+* Выполнить загрузку данных ингредиентов в базу данных:
 
 ```
-docker compose exec web python manage.py load_csv
+sudo docker compose exec backend python manage.py load_csv
 ```
 или 
 
 ```
-docker compose exec web python manage.py loaddata fixtures.json 
+docker compose exec backend python manage.py loaddata ingredients.json 
 ```
 
-* 5. Загрузите статику:
 
-```
-docker compose exec web python manage.py collectstatic --no-input
-```
 
 #### Проект доступен
 
 
-## Документация для YaMDb доступна по адресу:
 
 ## Документация для FOODGRAM доступна по адресу:
 
 ```http://localhost/api/docs/redoc.html```
+[Ссылка на redoc проекта](http://158.160.40.3/redoc/ "http://158.160.40.3/redoc/")
 
 ## Сайт FOODGRAM доступен по адресу:
 
-```http://localhost/```
+
+[http://localhost/](http://158.160.40.3/redoc/ "http://158.160.40.3/redoc/")
 
 ## Автор:
 
