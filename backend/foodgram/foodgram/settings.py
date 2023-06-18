@@ -26,11 +26,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY_APP', default='12345')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-CSRF_TRUSTED_ORIGINS = ['https://*.okk.hopto.org/', 'https://*.158.160.40.3', 'https://*.127.0.0.1']
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.okk.hopto.org/', 'https://*.158.160.40.3', 'https://*.127.0.0.1',
+    'http://*.okk.hopto.org/', 'http://*.158.160.40.3', 'http://*.127.0.0.1',
+]
 
 # Application definition
 
