@@ -98,6 +98,23 @@ jobs:
           source: "docs/."
           target: "./foodgram_project/docs/"
           strip_components: 1
+
+  copy_data:
+    name: Copy data ingredients
+    runs-on: ubuntu-latest
+    needs: build_and_push_backend_to_docker_hub
+    steps:
+      - uses: actions/checkout@master
+      - name: copy file via ssh password
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          source: "data/."
+          target: "./foodgram_project/data/"
+          strip_components: 1
   
   deploy:
     runs-on: ubuntu-latest
