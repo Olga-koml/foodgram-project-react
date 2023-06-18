@@ -98,7 +98,7 @@ jobs:
           source: "docs/."
           target: "./foodgram_project/docs/"
           strip_components: 1
-
+  
   copy_data:
     name: Copy data ingredients
     runs-on: ubuntu-latest
@@ -115,6 +115,7 @@ jobs:
           source: "data/."
           target: "./foodgram_project/data/"
           strip_components: 1
+
   
   deploy:
     runs-on: ubuntu-latest
