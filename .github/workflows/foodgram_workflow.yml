@@ -79,13 +79,13 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           source: "infra/*"
-          target: "./foodgram_project_diplom/"
+          target: "./foodgram_project"
           strip_components: 1
 
   copy_docs:
     name: Copy Redocs
     runs-on: ubuntu-latest
-    needs: tests
+    needs: build_and_push_backend_to_docker_hub
     steps:
       - uses: actions/checkout@master
       - name: copy file via ssh password
@@ -96,7 +96,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           source: "docs/."
-          target: "./foodgram_project_diplom/docs/"
+          target: "./foodgram_project/docs/"
           strip_components: 1
   
   deploy:

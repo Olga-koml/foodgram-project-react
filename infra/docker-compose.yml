@@ -13,11 +13,12 @@ services:
     volumes:
       - foodgram_static:/app/static/
       - foodgram_media:/app/media/
+      - ../data:/app/data
     depends_on:
       - db
     env_file:
       - ./.env
-    restart: on-failure
+    restart: always
 
   frontend:
     image: olgakom/foodgram_frontend:v.14.06.2023
