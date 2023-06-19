@@ -16,9 +16,16 @@ email = vv@mail.ru
 
 # Проект FOODGRAM
 
-[Ссылка на redoc проекта](http://158.160.40.3/redoc/ "http://158.160.40.3/redoc/").
+[http://158.160.40.3/](http://158.160.40.3/)  
 
-```http://okk.hopto.org/redoc/```
+или
+
+[http://okk.hopto.org/](http://okk.hopto.org/)
+
+Админ панель доступна по ссылке [http://okk.hopto.org/admin/](http://okk.hopto.org/admin/)
+
+Документация доступна по ссылке [http://okk.hopto.org/api/redoc/](http://okk.hopto.org/api/redoc/)
+
 
 Приложение FOODGRAM -  сайт с рецептами. 
 
@@ -113,11 +120,6 @@ sudo docker compose exec backend python manage.py createsuperuser
 ```
 sudo docker compose exec backend python manage.py load_csv
 ```
-или 
-
-```
-docker compose exec backend python manage.py loaddata ingredients.json 
-```
 
 
 
@@ -127,14 +129,11 @@ docker compose exec backend python manage.py loaddata ingredients.json
 
 ## Документация для FOODGRAM доступна по адресу:
 
-```http://localhost/api/docs/redoc.html```
-[Ссылка на redoc проекта](http://158.160.40.3/redoc/ "http://158.160.40.3/redoc/")
-
-## Сайт FOODGRAM доступен по адресу:
+```http://158.160.40.3/api/docs/```
+[Ссылка на redoc проекта](http://158.160.40.3/api/docs/ "http://158.160.40.3/api/docs/")
 
 
-[http://localhost/](http://158.160.40.3/redoc/ "http://158.160.40.3/redoc/")
 
 ## Автор:
 
-[Комлева Ольга](https://github.com/Olga-koml)
+студент ЯП [Комлева Ольга](https://github.com/Olga-koml)
